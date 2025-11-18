@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIVL 100 - Statics Tutorial Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .capacity-tracker {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .capacity-tracker h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .session-counts {
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .session-count-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .session-count-item:last-child {
+            border-bottom: none;
+        }
+
+        .session-info {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .session-info h3 {
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .session-option {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .session-option strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            touch-action: manipulation;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 15px;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .registrations-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .registrations-section h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .admin-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .export-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .reset-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .registrations-table {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 550px;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .locked-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #721c24;
+        }
+
+        .locked-message h2 {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-buttons {
+                flex-direction: column;
+            }
+
+            .admin-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 CIVL 100 - Statics Tutorial Registration</h1>
+            <p>Australian University of Kuwait</p>
+        </div>
+
+        <div class="content">
+            <div class="capacity-tracker">
+                <h3>Registration Capacity</h3>
+                <p><strong>Total:</strong> <span id="totalCount">0</span> / 90 students</p>
+                <div class="session-counts">
+                    <div class="session-count-item">
+                        <span>Session 1 (Mon 11 AM)</span>
+                        <strong id="count1">0/30</strong>
+                    </div>
+                    <div class="session-count-item">
+                        <span>Session 2 (Mon 4 PM)</span>
+                        <strong id="count2">0/30</strong>
+                    </div>
+                    <div class="session-count-item">
+                        <span>Session 3 (Tue 12 PM)</span>
+                        <strong id="count3">0/30</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert" id="alertBox"></div>
+
+            <div id="formSection">
+                <div class="session-info">
+                    <h3>📅 Available Tutorial Sessions</h3>
+                    <div class="session-option">
+                        <strong>Session 1</strong>
+                        Monday, November 24, 2025 | 11:00 AM - 1:00 PM<br>
+                        📍 Building 4, Room SF 05
+                    </div>
+                    <div class="session-option">
+                        <strong>Session 2</strong>
+                        Monday, November 24, 2025 | 4:00 PM - 6:00 PM<br>
+                        📍 Building 1, Room FF 16
+                    </div>
+                    <div class="session-option">
+                        <strong>Session 3</strong>
+                        Tuesday, November 25, 2025 | 12:00 PM - 2:00 PM<br>
+                        📍 Building 3B, Room GF 02
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="studentName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="studentName" placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="studentId">Student ID <span class="required">*</span></label>
+                    <input type="text" id="studentId" placeholder="Enter your student ID">
+                </div>
+
+                <div class="form-group">
+                    <label for="sessionSelect">Preferred Session <span class="required">*</span></label>
+                    <select id="sessionSelect">
+                        <option value="">-- Select a session --</option>
+                        <option value="Session1">Session 1 - Mon, Nov 24 | 11 AM - 1 PM | Bldg 4, SF 05</option>
+                        <option value="Session2">Session 2 - Mon, Nov 24 | 4 PM - 6 PM | Bldg 1, FF 16</option>
+                        <option value="Session3">Session 3 - Tue, Nov 25 | 12 PM - 2 PM | Bldg 3B, GF 02</option>
+                    </select>
+                </div>
+
+                <button class="submit-btn" id="registerBtn">Register for Tutorial</button>
+            </div>
+
+            <div id="lockedSection" style="display: none;">
+                <div class="locked-message">
+                    <h2>🔒 Registration Closed</h2>
+                    <p>All tutorial sessions have reached maximum capacity.</p>
+                    <p>Please contact Dr. Eyad for assistance.</p>
+                </div>
+            </div>
+
+            <div class="registrations-section">
+                <h3>📊 Registration Records</h3>
+                <div class="admin-buttons">
+                    <button class="admin-btn export-btn" id="exportBtn">📥 Export CSV</button>
+                    <button class="admin-btn reset-btn" id="resetBtn">🔄 Reset All</button>
+                </div>
+                <div class="registrations-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Student ID</th>
+                                <th>Session</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #999;">No registrations yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple storage
+        let data = [];
+        const MAX_PER_SESSION = 30;
+        const PASSWORD = 'CIVL100';
+
+        // Session names
+        const sessions = {
+            Session1: 'Mon, Nov 24 | 11 AM - 1 PM | Bldg 4, SF 05',
+            Session2: 'Mon, Nov 24 | 4 PM - 6 PM | Bldg 1, FF 16',
+            Session3: 'Tue, Nov 25 | 12 PM - 2 PM | Bldg 3B, GF 02'
+        };
+
+        // Load data
+        function loadData() {
+            try {
+                const stored = localStorage.getItem('civl100_data');
+                if (stored) {
+                    data = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error('Load error:', e);
+                data = [];
+            }
+            updateUI();
+        }
+
+        // Save data
+        function saveData() {
+            try {
+                localStorage.setItem('civl100_data', JSON.stringify(data));
+                return true;
+            } catch (e) {
+                console.error('Save error:', e);
+                return false;
+            }
+        }
+
+        // Count sessions
+        function countSession(sessionId) {
+            return data.filter(r => r.session === sessionId).length;
+        }
+
+        // Update display
+        function updateUI() {
+            document.getElementById('totalCount').textContent = data.length;
+            document.getElementById('count1').textContent = countSession('Session1') + '/30';
+            document.getElementById('count2').textContent = countSession('Session2') + '/30';
+            document.getElementById('count3').textContent = countSession('Session3') + '/30';
+
+            // Update table
+            const tbody = document.getElementById('tableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">No registrations yet</td></tr>';
+            } else {
+                tbody.innerHTML = data.map((r, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${r.name}</td>
+                        <td>${r.studentId}</td>
+                        <td>${sessions[r.session]}</td>
+                        <td>${r.time}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Check if full
+            const s1Full = countSession('Session1') >= MAX_PER_SESSION;
+            const s2Full = countSession('Session2') >= MAX_PER_SESSION;
+            const s3Full = countSession('Session3') >= MAX_PER_SESSION;
+
+            const select = document.getElementById('sessionSelect');
+            select.options[1].disabled = s1Full;
+            select.options[2].disabled = s2Full;
+            select.options[3].disabled = s3Full;
+
+            if (s1Full) select.options[1].text = 'Session 1 - FULL';
+            if (s2Full) select.options[2].text = 'Session 2 - FULL';
+            if (s3Full) select.options[3].text = 'Session 3 - FULL';
+
+            // Lock if all full
+            if (s1Full && s2Full && s3Full) {
+                document.getElementById('formSection').style.display = 'none';
+                document.getElementById('lockedSection').style.display = 'block';
+            }
+        }
+
+        // Show message
+        function showMsg(msg, type) {
+            const alert = document.getElementById('alertBox');
+            alert.textContent = msg;
+            alert.className = 'alert ' + type;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 5000);
+        }
+
+        // Register button click
+        document.getElementById('registerBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('studentName').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+            const session = document.getElementById('sessionSelect').value;
+
+            // Validate
+            if (!name) {
+                showMsg('Please enter your name', 'error');
+                return;
+            }
+            if (!studentId) {
+                showMsg('Please enter your Student ID', 'error');
+                return;
+            }
+            if (!session) {
+                showMsg('Please select a session', 'error');
+                return;
+            }
+
+            // Check duplicate
+            if (data.some(r => r.studentId === studentId)) {
+                showMsg('This Student ID is already registered!', 'error');
+                return;
+            }
+
+            // Check session full
+            if (countSession(session) >= MAX_PER_SESSION) {
+                showMsg('This session is full! Please choose another.', 'error');
+                return;
+            }
+
+            // Add registration
+            const reg = {
+                name: name,
+                studentId: studentId,
+                session: session,
+                time: new Date().toLocaleString()
+            };
+
+            data.push(reg);
+
+            if (saveData()) {
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentId').value = '';
+                document.getElementById('sessionSelect').value = '';
+                showMsg('✅ Registration successful!', 'success');
+                updateUI();
+            } else {
+                data.pop();
+                showMsg('Error saving. Please try again.', 'error');
+            }
+        });
+
+        // Export button
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            if (data.length === 0) {
+                alert('No registrations to export');
+                return;
+            }
+
+            const pwd = prompt('Enter admin password:');
+            if (pwd !== PASSWORD) {
+                alert('❌ Incorrect password');
+                return;
+            }
+
+            let csv = 'No,Name,Student ID,Session,Time\n';
+            data.forEach((r, i) => {
+                csv += `${i+1},"${r.name}","${r.studentId}","${sessions[r.session]}","${r.time}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CIVL100_Registrations.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            showMsg('✅ CSV exported!', 'success');
+        });
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            const pwd = prompt('Enter admin password:');
+            if (pwd !== PASSWORD) {
+                alert('❌ Incorrect password');
+                return;
+            }
+
+            if (confirm('⚠️ Delete ALL registrations? This cannot be undone!')) {
+                if (data.length > 0 && confirm('Export backup first?')) {
+                    document.getElementById('exportBtn').click();
+                }
+                
+                data = [];
+                saveData();
+                document.getElementById('formSection').style.display = 'block';
+                document.getElementById('lockedSection').style.display = 'none';
+                
+                // Reset dropdown
+                const select = document.getElementById('sessionSelect');
+                select.options[1].disabled = false;
+                select.options[2].disabled = false;
+                select.options[3].disabled = false;
+                select.options[1].text = 'Session 1 - Mon, Nov 24 | 11 AM - 1 PM | Bldg 4, SF 05';
+                select.options[2].text = 'Session 2 - Mon, Nov 24 | 4 PM - 6 PM | Bldg 1, FF 16';
+                select.options[3].text = 'Session 3 - Tue, Nov 25 | 12 PM - 2 PM | Bldg 3B, GF 02';
+                
+                updateUI();
+                showMsg('✅ All registrations reset', 'success');
+            }
+        });
+
+        // Load on start
+        loadData();
+    </script>
+</body>
+</html>
